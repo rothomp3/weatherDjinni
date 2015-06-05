@@ -1,0 +1,82 @@
+forecast = record {
+    latitude: f64;
+    longitude: f64;
+    timezone: string;
+    offset: i32;
+    currently: dataPoint;
+    minutely: dataBlock;
+    hourly: dataBlock;
+    daily: dataBlock;
+    alerts: list<alert>;
+    flags: flags;
+}
+
+dataPoint = record {
+    time: i64;
+    summary: string;
+    icon: string;
+    sunriseTime: optional<i64>;
+    sunsetTime: optional<i64>;
+    moonPhase: optional<f64>;
+    nearestStormDistance: optional<f64>;
+    nearestStormBearing: optional<f64>;
+    precipIntensity: f64;
+    precipIntensityMax: optional<f64>;
+    precipIntensityMaxTime: optional<i64>;
+    precipProbability: f64;
+    precipType: string;
+    precipAccumulation: optional<f64>;
+    temperature: optional<f64>;
+    temperatureMin: optional<f64>;
+    temperatureMinTime: optional<i64>;
+    temperatureMax: optional<f64>;
+    temperatureMaxTime: optional<i64>;
+    apparentTemperature: optional<f64>;
+    apparentTemperatureMax: optional<f64>;
+    apparentTemperatureMaxTime: optional<i64>;
+    apparentTemperatureMin: optional<f64>;
+    apparentTemperatureMinTime: optional<i64>;
+    dewPoint: f64;
+    windSpeed: f64;
+    windBearing: f64;
+    cloudCover: f64;
+    humidity: f64;
+    pressure: f64;
+    visibility: f64;
+    ozone: f64;
+}
+
+dataBlock = record {
+    summary: string;
+    icon: string;
+    data: list<dataPoint>;
+}
+
+alert = record {
+    title: string;
+    expires: i64;
+    alert_description: string;
+    uri: string;
+}
+
+flags = record {
+    darksky_unavailable: optional<string>;
+    darksky_stations: optional<list<string>>;
+    datapoint_stations: optional<list<string>>;
+    isd_stations: optional<list<string>>;
+    lamp_stations: optional<list<string>>;
+    metar_stations: optional<list<string>>;
+    metno_license: optional<string>;
+    sources: optional<list<string>>;
+    units: optional<string>;
+}
+
+weatherController = interface +c {
+    forecast(latitude: f64, longitude: f64): forecast;
+    static create_with_network_controller(controller: network_controller): weatherController;
+}
+
+network_controller = interface +j +o {
+    get(URI: string): binary;
+    post(URI: string, body: binary): binary;
+}
