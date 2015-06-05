@@ -155,8 +155,9 @@ WeatherControllerImpl::WeatherControllerImpl(const std::shared_ptr<NetworkContro
 
 Forecast WeatherControllerImpl::forecast(double latitude, double longitude) {
     
+    char* apiKey = getenv("RT_APIKEY");
     std::ostringstream uriStream;
-    uriStream << "https://api.forecast.io/forecast/c0924a7ba0fe5e2090bb99cec443d08c/" << latitude << "," << longitude;
+    uriStream << "https://api.forecast.io/forecast/" << std::string(apiKey) << "/" << latitude << "," << longitude;
 
     std::vector<uint8_t> result;
     if (this->network_controller)
