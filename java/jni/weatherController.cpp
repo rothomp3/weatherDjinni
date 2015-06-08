@@ -3,7 +3,6 @@
 
 #include "weatherController.hpp"  // my header
 #include "Marshal.hpp"
-#include "forecast.hpp"
 #include "network_controller.hpp"
 #include "weatherController.hpp"
 
@@ -22,15 +21,14 @@ CJNIEXPORT void JNICALL Java_com_wta_weather_WeatherController_00024CppProxy_nat
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_com_wta_weather_WeatherController_00024CppProxy_native_1forecast(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jdouble j_latitude, jdouble j_longitude)
+CJNIEXPORT void JNICALL Java_com_wta_weather_WeatherController_00024CppProxy_native_1forecast(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jdouble j_latitude, jdouble j_longitude)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::CppProxyHandle<::WeatherController>::get(nativeRef);
-        auto r = ref->forecast(::djinni::F64::toCpp(jniEnv, j_latitude),
-                               ::djinni::F64::toCpp(jniEnv, j_longitude));
-        return ::djinni_generated::Forecast::fromCpp(jniEnv, r).release();
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+        ref->forecast(::djinni::F64::toCpp(jniEnv, j_latitude),
+                      ::djinni::F64::toCpp(jniEnv, j_longitude));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 CJNIEXPORT jobject JNICALL Java_com_wta_weather_WeatherController_createWithNetworkController(JNIEnv* jniEnv, jobject /*this*/, jobject j_controller)
@@ -40,6 +38,15 @@ CJNIEXPORT jobject JNICALL Java_com_wta_weather_WeatherController_createWithNetw
         auto r = ::WeatherController::create_with_network_controller(::djinni_generated::NetworkController::toCpp(jniEnv, j_controller));
         return ::djinni_generated::WeatherController::fromCpp(jniEnv, r).release();
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_com_wta_weather_WeatherController_00024CppProxy_native_1receiveData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_data)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::CppProxyHandle<::WeatherController>::get(nativeRef);
+        ref->receiveData(::djinni::Binary::toCpp(jniEnv, j_data));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 }  // namespace djinni_generated

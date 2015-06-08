@@ -153,7 +153,7 @@ WeatherControllerImpl::WeatherControllerImpl(const std::shared_ptr<NetworkContro
     this->network_controller = controller;
 }
 
-Forecast WeatherControllerImpl::forecast(double latitude, double longitude) {
+void WeatherControllerImpl::forecast(double latitude, double longitude) {
     
     char* apiKey = getenv("RT_APIKEY");
     std::ostringstream uriStream;
@@ -163,9 +163,21 @@ Forecast WeatherControllerImpl::forecast(double latitude, double longitude) {
     if (this->network_controller)
     {
         auto& netController = *(this->network_controller);
-        result = netController.get(uriStream.str());
+        netController.get(uriStream.str(), shared_from_this());
     }
+}
 
+void WeatherControllerImpl::receiveData(const std::vector<uint8_t> &data) {
+    Forecast result = this->createForcast(data);
+    if (this->network_controller)
+    {
+        auto& netController = *(this->network_controller);
+        netController.callbackNative(result);
+    }
+}
+
+Forecast WeatherControllerImpl::createForcast(const std::vector<uint8_t> &result)
+{
     std::string errString;
     
     auto jsonResult = Json::parse(std::string(result.begin(), result.end()), errString);

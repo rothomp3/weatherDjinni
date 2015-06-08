@@ -31,8 +31,9 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
-        std::vector<uint8_t> get(const std::string & URI) override;
+        void get(const std::string & URI, const std::shared_ptr<::WeatherController> & controller) override;
         std::vector<uint8_t> post(const std::string & URI, const std::vector<uint8_t> & body) override;
+        void callbackNative(const ::Forecast & result) override;
 
     private:
         using ::djinni::JavaProxyCacheEntry::getGlobalRef;
@@ -41,8 +42,9 @@ private:
     };
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("com/wta/weather/NetworkController") };
-    const jmethodID method_get { ::djinni::jniGetMethodID(clazz.get(), "get", "(Ljava/lang/String;)[B") };
+    const jmethodID method_get { ::djinni::jniGetMethodID(clazz.get(), "get", "(Ljava/lang/String;Lcom/wta/weather/WeatherController;)V") };
     const jmethodID method_post { ::djinni::jniGetMethodID(clazz.get(), "post", "(Ljava/lang/String;[B)[B") };
+    const jmethodID method_callbackNative { ::djinni::jniGetMethodID(clazz.get(), "callbackNative", "(Lcom/wta/weather/Forecast;)V") };
 };
 
 }  // namespace djinni_generated

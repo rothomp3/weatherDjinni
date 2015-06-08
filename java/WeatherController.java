@@ -6,7 +6,9 @@ package com.wta.weather;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class WeatherController {
-    public abstract Forecast forecast(double latitude, double longitude);
+    public abstract void forecast(double latitude, double longitude);
+
+    public abstract void receiveData(byte[] data);
 
     public static native WeatherController createWithNetworkController(NetworkController controller);
 
@@ -34,11 +36,19 @@ public abstract class WeatherController {
         }
 
         @Override
-        public Forecast forecast(double latitude, double longitude)
+        public void forecast(double latitude, double longitude)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_forecast(this.nativeRef, latitude, longitude);
+            native_forecast(this.nativeRef, latitude, longitude);
         }
-        private native Forecast native_forecast(long _nativeRef, double latitude, double longitude);
+        private native void native_forecast(long _nativeRef, double latitude, double longitude);
+
+        @Override
+        public void receiveData(byte[] data)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_receiveData(this.nativeRef, data);
+        }
+        private native void native_receiveData(long _nativeRef, byte[] data);
     }
 }

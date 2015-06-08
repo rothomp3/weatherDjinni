@@ -72,11 +72,13 @@ flags = record {
 }
 
 weatherController = interface +c {
-    forecast(latitude: f64, longitude: f64): forecast;
+    forecast(latitude: f64, longitude: f64);
     static create_with_network_controller(controller: network_controller): weatherController;
+    receiveData(data: binary);
 }
 
 network_controller = interface +j +o {
-    get(URI: string): binary;
+    get(URI: string, controller:weatherController);
     post(URI: string, body: binary): binary;
+    callbackNative(result: forecast);
 }

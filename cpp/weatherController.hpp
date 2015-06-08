@@ -3,8 +3,9 @@
 
 #pragma once
 
-#include "forecast.hpp"
+#include <cstdint>
 #include <memory>
+#include <vector>
 
 class NetworkController;
 
@@ -12,7 +13,9 @@ class WeatherController {
 public:
     virtual ~WeatherController() {}
 
-    virtual Forecast forecast(double latitude, double longitude) = 0;
+    virtual void forecast(double latitude, double longitude) = 0;
 
     static std::shared_ptr<WeatherController> create_with_network_controller(const std::shared_ptr<NetworkController> & controller);
+
+    virtual void receiveData(const std::vector<uint8_t> & data) = 0;
 };

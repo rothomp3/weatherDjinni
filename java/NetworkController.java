@@ -4,7 +4,9 @@
 package com.wta.weather;
 
 public abstract class NetworkController {
-    public abstract byte[] get(String URI);
+    public abstract void get(String URI, WeatherController controller);
 
     public abstract byte[] post(String URI, byte[] body);
+
+    public abstract void callbackNative(Forecast result);
 }

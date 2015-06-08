@@ -6,7 +6,6 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
-#import "MTForecast+Private.h"
 #import "MTNetworkController+Private.h"
 #import "MTWeatherController+Private.h"
 #include <exception>
@@ -32,12 +31,11 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (nonnull MTForecast *)forecast:(double)latitude
-                       longitude:(double)longitude {
+- (void)forecast:(double)latitude
+       longitude:(double)longitude {
     try {
-        auto r = _cppRef.get()->forecast(::djinni::F64::toCpp(latitude),
-                                         ::djinni::F64::toCpp(longitude));
-        return ::djinni_generated::Forecast::fromCpp(r);
+        _cppRef.get()->forecast(::djinni::F64::toCpp(latitude),
+                                ::djinni::F64::toCpp(longitude));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -45,6 +43,12 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto r = ::WeatherController::create_with_network_controller(::djinni_generated::NetworkController::toCpp(controller));
         return ::djinni_generated::WeatherController::fromCpp(r);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)receiveData:(nonnull NSData *)data {
+    try {
+        _cppRef.get()->receiveData(::djinni::Binary::toCpp(data));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

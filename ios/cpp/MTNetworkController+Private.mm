@@ -5,6 +5,8 @@
 #import "MTNetworkController.h"
 #import "DJIMarshal+Private.h"
 #import "DJIObjcWrapperCache+Private.h"
+#import "MTForecast+Private.h"
+#import "MTWeatherController+Private.h"
 
 static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for this file");
 
@@ -16,11 +18,11 @@ class NetworkController::ObjcProxy final
 {
 public:
     using Handle::Handle;
-    std::vector<uint8_t> get(const std::string & URI) override
+    void get(const std::string & URI, const std::shared_ptr<::WeatherController> & controller) override
     {
         @autoreleasepool {
-            auto r = [Handle::get() get:(::djinni::String::fromCpp(URI))];
-            return ::djinni::Binary::toCpp(r);
+            [Handle::get() get:(::djinni::String::fromCpp(URI))
+                    controller:(::djinni_generated::WeatherController::fromCpp(controller))];
         }
     }
     std::vector<uint8_t> post(const std::string & URI, const std::vector<uint8_t> & body) override
@@ -29,6 +31,12 @@ public:
             auto r = [Handle::get() post:(::djinni::String::fromCpp(URI))
                                     body:(::djinni::Binary::fromCpp(body))];
             return ::djinni::Binary::toCpp(r);
+        }
+    }
+    void callbackNative(const ::Forecast & result) override
+    {
+        @autoreleasepool {
+            [Handle::get() callbackNative:(::djinni_generated::Forecast::fromCpp(result))];
         }
     }
 };

@@ -3,15 +3,21 @@
 
 #pragma once
 
+#include "forecast.hpp"
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
+
+class WeatherController;
 
 class NetworkController {
 public:
     virtual ~NetworkController() {}
 
-    virtual std::vector<uint8_t> get(const std::string & URI) = 0;
+    virtual void get(const std::string & URI, const std::shared_ptr<WeatherController> & controller) = 0;
 
     virtual std::vector<uint8_t> post(const std::string & URI, const std::vector<uint8_t> & body) = 0;
+
+    virtual void callbackNative(const Forecast & result) = 0;
 };

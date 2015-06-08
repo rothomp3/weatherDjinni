@@ -12,13 +12,15 @@
 #import "network_controller.hpp"
 #import <memory>
 
-class WeatherControllerImpl : public WeatherController {
+class WeatherControllerImpl : public WeatherController, public std::enable_shared_from_this<WeatherController> {
 public:
     WeatherControllerImpl(const std::shared_ptr<NetworkController>& controller);
-    virtual Forecast forecast(double latitude, double longitude) override;
+    virtual void forecast(double latitude, double longitude) override;
+    virtual void receiveData(const std::vector<uint8_t> & data) override;
     
 private:
     std::shared_ptr<NetworkController> network_controller;
+    Forecast createForcast(const std::vector<uint8_t> & data);
 };
 
 #endif
